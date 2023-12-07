@@ -5,8 +5,8 @@ from processingservice.inference.base import BasePredictor
 
 class BaseDummyPredictor(BasePredictor):
     def predict(self, data: pd.DataFrame):
-        data['pred'] = 0
-        return data['pred']
+        data["pred"] = 0
+        return data["pred"]
 
 
 class DummyPM1Predictor(BaseDummyPredictor):

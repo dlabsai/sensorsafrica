@@ -26,7 +26,9 @@ def string_to_datetime(date_string: str) -> datetime:
     return datetime.strptime(date_string, date_format)
 
 
-def build_input_records_for_inference(csv_file: str | None = None, csv_as_df: pd.DataFrame | None = None) -> list[InputRecord]:
+def build_input_records_for_inference(
+    csv_file: str | None = None, csv_as_df: pd.DataFrame | None = None
+) -> list[InputRecord]:
     if csv_file is None and csv_as_df is None:
         raise ValueError("Either csv_file or csv_as_df must be provided")
 
@@ -55,22 +57,19 @@ def build_input_records_for_inference(csv_file: str | None = None, csv_as_df: pd
             InputRecord(
                 datetime_utc=datetime_utc,
                 device_id=str(row["device_id"]),
-
                 parameter=str(row["parameter"]),
                 value=value,
-
-                weather=get_weather_record(latitude, longitude, datetime_utc.date(), datetime_utc.hour),
-
+                weather=get_weather_record(
+                    latitude, longitude, datetime_utc.date(), datetime_utc.hour
+                ),
                 latitude=latitude,
                 longitude=longitude,
                 country=str(row["country"]),
-
                 sensors_type=sensors_type,
                 chip_id=str(row["chip_id"]),
                 location_id=row["location_id"],
                 street_name=str(row["street_name"]),
                 city=str(row["city"]),
-
                 deployment_date=string_to_datetime(row["deployment_date"]),
             )
         )
