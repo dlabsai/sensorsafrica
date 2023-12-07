@@ -36,12 +36,29 @@ function Dashboard() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    loadData();
+    console.log("useEffect");
+    loadDataLoop();
   }, []);
 
+  const loadDataLoop = async () => {
+    await loadData();
+
+    setTimeout(() => {
+      loadDataLoop();
+    }, 30 * 1000);
+  };
+
   const loadData = () => {
-    getItems().then((r) => {
-      setData(r.data);
+    return new Promise((resolve, reject) => {
+      getItems()
+        .then((r) => {
+          setData(r.data);
+
+          resolve(true);
+        })
+        .catch(() => {
+          reject();
+        });
     });
   };
 
