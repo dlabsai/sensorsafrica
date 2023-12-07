@@ -12,11 +12,9 @@ class BaseDataRecord(BaseModel):
 class WeatherRecord(BaseDataRecord):
     temp: float
     precip: float
-    snow: float
     pressure: float
     humidity: float
     wind_speed: float
-    wind_gust: float | None
 
 
 class OpenAQRecord(BaseDataRecord):
