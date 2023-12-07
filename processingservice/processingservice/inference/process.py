@@ -2,6 +2,7 @@ import pandas as pd
 
 from typing import Any, Dict
 from ..awsadapters.db import update_dynamodb_item
+from ..data.transforms.dataset import build_input_records, get_datasets
 
 from .enums import InferenceStatus
 from .loaders import load_user_uploaded_data_from_storage, load_predictors
@@ -10,11 +11,15 @@ from .loaders import load_user_uploaded_data_from_storage, load_predictors
 def process(payload: Dict[str, Any]) -> bool:
     # Load file from S3
     frame_with_data = load_user_uploaded_data_from_storage(payload["S3location"])
-    print(frame_with_data)
+
+    input_records = build_input_records(csv_as_df=frame_with_data)
+    dataset_for_inference = get_datasets(input_records)
 
     # Make inference
+    result = run_inference(*dataset_for_inference)
 
     # Save inference to S3
+    print(result)
 
     # Update record in DynamoDB
     update_dynamodb_item(table_name="sensorsafrica-requests",
