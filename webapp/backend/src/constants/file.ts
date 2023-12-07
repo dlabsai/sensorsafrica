@@ -5,4 +5,4 @@ export const REQUIRED_CSV_COLUMNS = [
   'parameter',
   'latitude',
   'longitude',
-]
+];
