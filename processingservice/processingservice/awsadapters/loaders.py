@@ -1,3 +1,4 @@
+import joblib
 import pandas as pd
 import boto3
 import requests
@@ -23,3 +24,16 @@ def load_csv_from_s3(url: str, expiry: int = 3600) -> pd.DataFrame:
     # Use the presigned URL to read the CSV file into a DataFrame
     response = requests.get(presigned_url)
     return pd.read_csv(BytesIO(response.content))
+
+
+def load_model_from_s3(bucket_name: str, model_object_key: str, expiry: int = 3600):
+    s3_client = boto3.client("s3", config=STANDARD)
+
+    presigned_url = s3_client.generate_presigned_url(
+        "get_object",
+        Params={"Bucket": bucket_name, "Key": model_object_key},
+        ExpiresIn=expiry,
+    )
+    response = requests.get(presigned_url)
+
+    return joblib.load(BytesIO(response.content))
