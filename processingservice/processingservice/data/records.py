@@ -26,7 +26,7 @@ class OpenAQRecord(BaseDataRecord):
 
 class InputRecord(BaseModel):
     datetime_utc: datetime
-    device_id: str
+    device_id: str | None
 
     parameter: str
     value: float | None
@@ -35,15 +35,14 @@ class InputRecord(BaseModel):
 
     latitude: float
     longitude: float
-    sensors_type: str
-    country: str
+    country: str | None
 
-    chip_id: str
-    location_id: int
-    street_name: str
-    city: str
-    country: str
-    deployment_date: datetime
+    sensors_type: int | None
+    chip_id: str | None
+    location_id: int | None
+    street_name: str | None
+    city: str | None
+    deployment_date: datetime | None
 
 
 class PredictedRecord(BaseModel):
