@@ -28,10 +28,8 @@ class InputRecord(BaseModel):
     datetime_utc: datetime
     device_id: str
 
-    # air quality parameters
-    pm_1: float | None
-    pm_2_5: float | None
-    pm_10: float | None
+    parameter: str
+    value: float | None
 
     weather: WeatherRecord
 
