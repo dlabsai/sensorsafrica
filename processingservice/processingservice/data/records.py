@@ -24,17 +24,33 @@ class OpenAQRecord(BaseDataRecord):
     value: float
 
 
-class InputRecord(WeatherRecord, OpenAQRecord):
-    parameter: str
-    value: float
+class InputRecord(BaseModel):
+    datetime_utc: datetime
+    device_id: str
 
+    # air quality parameters
+    pm_1: float | None
+    pm_2_5: float | None
+    pm_10: float | None
+
+    weather: WeatherRecord
+
+    latitude: float
+    longitude: float
     sensors_type: str
     country: str
 
     chip_id: str
-    device_id: str
     location_id: int
     street_name: str
     city: str
     country: str
     deployment_date: datetime
+
+
+class PredictedRecord(BaseModel):
+    datetime_utc: datetime
+    device_id: str
+
+    parameter: str
+    value: float
