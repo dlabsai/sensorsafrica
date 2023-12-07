@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBClient,
+  PutItemCommand,
+  ScanCommand,
+} from '@aws-sdk/client-dynamodb';
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 import { env } from 'process';
 import { getUploadFilePath } from '../../utils/file';
@@ -10,7 +14,7 @@ import { createInterface } from 'readline';
 import { REQUIRED_CSV_COLUMNS } from '../../constants/file';
 import { MissingHeadersError } from './errors/missingHeadersError';
 import { ProcessRequest } from './types/processRequest';
-import { marshall } from '@aws-sdk/util-dynamodb';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
 @Injectable()
 export class ProcessService {
@@ -105,6 +109,26 @@ export class ProcessService {
           RequestID: requestUuid,
         }),
       }),
+    );
+  }
+
+  async getProcessRequestRows(userId: string): Promise<ProcessRequest[]> {
+    const result = await this.dynamoDBClient.send(
+      new ScanCommand({
+        TableName: env.AWS_DYNAMODB_TABLE_NAME,
+        ExpressionAttributeValues: {
+          ':v1': {
+            S: userId,
+          },
+        },
+        FilterExpression: 'UserID = :v1',
+      }),
+    );
+
+    return (
+      result.Items?.map<ProcessRequest>(
+        (i) => unmarshall(i) as ProcessRequest,
+      ) || []
     );
   }
 }
