@@ -5,6 +5,7 @@ import {
   HttpStatus,
   ParseFilePipe,
   Post,
+  Get,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,6 +22,7 @@ import { Response } from '../../types/response';
 import { v4 } from 'uuid';
 import { AuthGuard } from '../../auth/auth.guard';
 import { RequestWithUser } from '../../types/request';
+import { ProcessRequest } from './types/processRequest';
 
 @Controller('process')
 @UseGuards(AuthGuard)
@@ -83,6 +85,18 @@ export class ProcessController {
     return {
       status: true,
       data: requestUuid,
+    };
+  }
+
+  @Get('list')
+  async listProcessRequests(
+    @Req() request: RequestWithUser,
+  ): Promise<Response<ProcessRequest[]>> {
+    const items = await this.fileService.getProcessRequestRows(request.user.id);
+
+    return {
+      status: true,
+      data: items,
     };
   }
 }
