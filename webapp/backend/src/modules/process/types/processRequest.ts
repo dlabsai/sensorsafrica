@@ -3,6 +3,6 @@ export type ProcessRequest = {
   UserID: string;
   S3location: string;
   InferenceS3location?: string;
-  Status: 'Processing' | 'Finished' | 'Failed';
+  Status: 'processing' | 'pending' | 'success' | 'failed' | 'cancel';
   ErrorMsg?: string;
 };

@@ -5,21 +5,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { CognitoJwtVerifier } from 'aws-jwt-verify';
-import { env } from 'process';
+import { verifyIdToken } from './verifier';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private verifier;
-
-  constructor() {
-    this.verifier = CognitoJwtVerifier.create({
-      userPoolId: env.AWS_COGNITO_USER_POOL_ID as string,
-      tokenUse: 'id',
-      clientId: env.AWS_COGNITO_CLIENT_ID,
-    });
-  }
-
+  constructor() {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
@@ -27,8 +17,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
-      // @ts-expect-error verify method expect 2 argument which is error in typings
-      const payload = await this.verifier.verify(token);
+      const payload = await verifyIdToken(token);
 
       request['user'] = {
         id: payload.sub,

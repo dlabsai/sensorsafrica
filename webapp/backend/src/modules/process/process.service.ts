@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import {
   DynamoDBClient,
   PutItemCommand,
@@ -15,6 +19,7 @@ import { REQUIRED_CSV_COLUMNS } from '../../constants/file';
 import { MissingHeadersError } from './errors/missingHeadersError';
 import { ProcessRequest } from './types/processRequest';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
 export class ProcessService {
@@ -84,7 +89,7 @@ export class ProcessService {
       RequestID: requestUuid,
       S3location: objectUrl,
       UserID: userId,
-      Status: 'Processing',
+      Status: 'processing',
     };
 
     await this.dynamoDBClient.send(
@@ -130,5 +135,16 @@ export class ProcessService {
         (i) => unmarshall(i) as ProcessRequest,
       ) || []
     );
+  }
+
+  async getFilePreSignedUrl(fileUrl: string) {
+    const command = new GetObjectCommand({
+      Bucket: env.AWS_S3_BUCKET,
+      Key: fileUrl.split('/').pop(),
+    });
+
+    return await getSignedUrl(this.s3client, command, {
+      expiresIn: 60 * 60 * 3,
+    });
   }
 }

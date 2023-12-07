@@ -1,4 +1,5 @@
 import os
+from functools import lru_cache
 from datetime import datetime
 from logging import getLogger
 
@@ -13,6 +14,7 @@ API_URL = os.getenv("WEATHER_API_URL")
 API_KEY = os.getenv("WEATHER_API_KEY")
 
 
+@lru_cache(maxsize=128)
 def get_weather(
     coordinates: str, date_from: str, date_to: str, include: str = "hours"
 ) -> list[WeatherRecord]:

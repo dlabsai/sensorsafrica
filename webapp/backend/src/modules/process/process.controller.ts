@@ -93,10 +93,25 @@ export class ProcessController {
     @Req() request: RequestWithUser,
   ): Promise<Response<ProcessRequest[]>> {
     const items = await this.fileService.getProcessRequestRows(request.user.id);
+    const data = [];
+
+    for (const item of items) {
+      const newItem = {
+        ...item,
+        S3location: await this.fileService.getFilePreSignedUrl(item.S3location),
+      };
+
+      if (item.InferenceS3location) {
+        newItem.InferenceS3location =
+          await this.fileService.getFilePreSignedUrl(item.InferenceS3location);
+      }
+
+      data.push(newItem);
+    }
 
     return {
       status: true,
-      data: items,
+      data,
     };
   }
 }

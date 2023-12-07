@@ -37,14 +37,13 @@ def consume_messages(queue_name: str, queues_handlers: Any) -> None:
         messages = queue.receive_messages(
             MaxNumberOfMessages=10,
             WaitTimeSeconds=1,
-            VisibilityTimeout=10 * 2,  # number of messages times forecasted time of executing
+            VisibilityTimeout=10
+            * 2,  # number of messages times forecasted time of executing
             # one message (magic number)
             MessageAttributeNames=["handler_name", "username"],
         )
         for message in messages:
-            logger.info(
-                f"AWS SQS consumer processing message {message.message_id}"
-            )
+            logger.info(f"AWS SQS consumer processing message {message.message_id}")
             try:
                 has_dispatched = message_dispatcher(message, queues_handlers)
                 if has_dispatched:
@@ -56,7 +55,9 @@ def consume_messages(queue_name: str, queues_handlers: Any) -> None:
                         f"AWS SQS consumer message deleted {message.message_id}"
                     )
                 else:
-                    logger.warning(f"AWS SQS consumer dispatch failed {message.message_id}")
+                    logger.warning(
+                        f"AWS SQS consumer dispatch failed {message.message_id}"
+                    )
             except AssertionError as e:
                 logger.warning(
                     f"AWS SQS consumer; {queue_name}, {message.message_id}, msg={str(e)}"

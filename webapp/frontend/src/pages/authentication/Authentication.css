@@ -1,0 +1,64 @@
+.layout {
+  background: #F8FBFF;
+  height: 100vh;
+  padding: 15px 40px 40px 40px;
+}
+
+.title {
+  color: #ECBA4A;
+  font-weight: 700;
+  font-size: 70px;
+  line-height: 1;
+  z-index: 4;
+  text-align: center;
+  margin-bottom: 20px
+}
+
+.subtitle {
+  text-align: center;
+}
+
+.form-container {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  z-index: 3;
+  align-items: center;
+}
+
+.ant-image {
+  display: block;
+  position: initial;
+}
+
+.bottom-shape {
+  position: fixed;
+  bottom: 0;
+  left: -100px;
+  width: 40%!important;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.top-shape {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20%!important;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.login-form {
+  max-width: 300px;
+  min-width: 300px;
+}
+
+.login-form-button {
+  width: 100%;
+}
+
+.login-form-register {
+  margin-top: 10px;
+  text-align: center;
+}

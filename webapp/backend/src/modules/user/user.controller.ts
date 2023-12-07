@@ -12,6 +12,8 @@ import {
   AuthenticationResultType,
   InitiateAuthCommandOutput,
 } from '@aws-sdk/client-cognito-identity-provider';
+import { verifyIdToken } from '../../auth/verifier';
+import { User } from '../../types/request';
 
 @Controller('user')
 export class UserController {
@@ -20,7 +22,7 @@ export class UserController {
   @Post('sign-in')
   async signIn(
     @Body() body: SignInBody,
-  ): Promise<Response<AuthenticationResultType>> {
+  ): Promise<Response<AuthenticationResultType & { user: User }>> {
     let data: InitiateAuthCommandOutput;
     try {
       data = await this.userService.signIn(body.username, body.password);
@@ -28,16 +30,24 @@ export class UserController {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
 
-    if (!data.AuthenticationResult) {
+    if (!data.AuthenticationResult || !data.AuthenticationResult.IdToken) {
       throw new HttpException(
         'Error occurred while processing request.',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
+    const userData = await verifyIdToken(data.AuthenticationResult.IdToken);
+
     return {
       status: true,
-      data: data.AuthenticationResult,
+      data: {
+        ...data.AuthenticationResult,
+        user: {
+          id: userData.sub,
+          email: userData.email as string,
+        },
+      },
     };
   }
 
