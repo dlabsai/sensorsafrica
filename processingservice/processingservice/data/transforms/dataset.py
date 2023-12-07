@@ -14,28 +14,47 @@ def process_dataset(df: pd.DataFrame) -> pd.DataFrame:
     ]
 
     result_df = pd.DataFrame()
+    result_df["timestamp"] = df["datetime_utc"].astype(str).str.slice(0, 19)
     result_df["timestamp"] = pd.to_datetime(
-        df["timestamp"], format="%Y-%m-%d %H:%M:%S.%f %z"
-    ).dt.tz_convert("UTC")
+        result_df["timestamp"], format="%Y-%m-%d %H:%M:%S"
+    )
     result_df["device_id"] = df["device_id"]
     result_df["parameter"] = df["parameter"]
+
+    result_df["weather__temp"] = df["weather__temp"]
+    result_df["weather__precip"] = df["weather__precip"]
+    result_df["weather__pressure"] = df["weather__pressure"]
+    result_df["weather__humidity"] = df["weather__humidity"]
+    result_df["weather__wind_speed"] = df["weather__wind_speed"]
+
     result_df["value"] = df["value"]
     result_df["location_id"] = df["location_id"]
-    result_df["hour"] = df["timestamp"].dt.hour
-    result_df["month"] = df["timestamp"].dt.month.astype(str)
+    result_df["hour"] = result_df["timestamp"].dt.hour
+    result_df["month"] = result_df["timestamp"].dt.month.astype(str)
     result_df["month_day"] = (
-        df["timestamp"].dt.month.astype(str) + "_" + df["timestamp"].dt.day.astype(str)
+        result_df["timestamp"].dt.month.astype(str) + "_" + result_df["timestamp"].dt.day.astype(str)
     )
     result_df["year_month_day"] = (
-        df["timestamp"].dt.year.astype(str)
+        result_df["timestamp"].dt.year.astype(str)
         + "_"
-        + df["timestamp"].dt.month.astype(str)
+        + result_df["timestamp"].dt.month.astype(str)
         + "_"
-        + df["timestamp"].dt.day.astype(str)
+        + result_df["timestamp"].dt.day.astype(str)
+    )
+
+    result_df["year_month_day_hour"] = (
+        result_df["timestamp"].dt.year.astype(str)
+        + "_"
+        + result_df["timestamp"].dt.month.astype(str)
+        + "_"
+        + result_df["timestamp"].dt.day.astype(str)
+        + "_"
+        + result_df["timestamp"].dt.hour.astype(str)
     )
 
     result_df = result_df.groupby(
         [
+            "year_month_day_hour",
             "device_id",
             "parameter",
             "year_month_day",
@@ -63,7 +82,6 @@ def process_dataset(df: pd.DataFrame) -> pd.DataFrame:
 
     result_df = result_df.drop('device_id', axis=1)
     result_df = result_df.drop('location_id', axis=1)
-
     return result_df
 
 

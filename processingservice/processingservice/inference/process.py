@@ -71,6 +71,19 @@ def run_inference(
 
     pm_1_predictor, pm_2_5_predictor, pm_10_predictor = load_predictors()
 
+    df_pred_pm_1 = df_pred_pm_1[
+        [
+            'avg_value_year_month_day',
+            'weather__temp',
+            'weather__precip',
+            'weather__pressure',
+            'weather__humidity',
+            'weather__wind_speed',
+            'hour',
+            'month'
+        ]
+    ]
+
     df_pred_pm_1["value"] = pm_1_predictor.predict(df_pred_pm_1)
     df_pred_pm_2_5["value"] = pm_2_5_predictor.predict(df_pred_pm_2_5)
     df_pred_pm_10["value"] = pm_10_predictor.predict(df_pred_pm_10)
