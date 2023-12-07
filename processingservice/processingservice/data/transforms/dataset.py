@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from processingservice.data.parameters import AirQualityParameter
 from processingservice.data.records import InputRecord
@@ -94,6 +94,8 @@ def build_input_records_for_inference(
         csv_as_df = pd.read_csv(csv_file)
 
     records = []
+
+    # Firstly, build InputRecord objects for each row in the CSV file
     for _, row in csv_as_df.iterrows():
         try:
             value = float(row["value"])
@@ -131,4 +133,9 @@ def build_input_records_for_inference(
                 deployment_date=string_to_datetime(row["deployment_date"]),
             )
         )
+
+    # Secondly, fill in missing records with None as a missing parameter for each sensor.
+    # We look only for missing PM values.
+
+
     return records
