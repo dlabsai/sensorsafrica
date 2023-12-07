@@ -8,15 +8,16 @@ from .getters import get_weather_record
 
 
 def process_dataset(df: pd.DataFrame) -> pd.DataFrame:
+    df = df[
+        df["parameter"].isin([p.value for p in AirQualityParameter])
+    ]
+
     result_df = pd.DataFrame()
     result_df["timestamp"] = pd.to_datetime(
         df["timestamp"], format="%Y-%m-%d %H:%M:%S.%f %z"
     ).dt.tz_convert("UTC")
     result_df["device_id"] = df["device_id"]
     result_df["parameter"] = df["parameter"]
-    result_df = result_df[
-        result_df["parameter"].isin([p.value for p in AirQualityParameter])
-    ]
     result_df["value"] = df["value"]
     result_df["location_id"] = df["location_id"]
     result_df["hour"] = df["timestamp"].dt.hour
@@ -58,6 +59,9 @@ def process_dataset(df: pd.DataFrame) -> pd.DataFrame:
         as_index=False,
     )["value"].transform("mean")
     """
+
+    result_df = result_df.drop('device_id', axis=1)
+    result_df = result_df.drop('location_id', axis=1)
 
     return result_df
 
