@@ -22,7 +22,7 @@ class Message(BaseModel):
         allow_population_by_field_name = True
 
     def to_payload(self, **kwargs: Any) -> Dict[str, Any]:
-        return self.dict(by_alias=True)
+        return self.model_dump(by_alias=True)
 
     request_id: str
     message_attributes: MessageAttributes

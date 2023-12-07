@@ -1,4 +1,3 @@
-import json
 from typing import Any, Optional
 
 import boto3
@@ -22,8 +21,9 @@ def get_attribute_value(sqs_message: Any, attr_key: str) -> Optional[str]:
 
 
 def message_dispatcher(sqs_message: Any) -> bool:
-    # TODO: implement
-    pass
+    # As for now we have only one queue, so dispatching is not needed
+
+    handler_name = get_attribute_value(sqs_message, "handler_name") or ""
 
 
 @click.command()
@@ -40,8 +40,8 @@ def consume_messages(queue_name: str) -> None:
         messages = queue.receive_messages(
             MaxNumberOfMessages=10,
             WaitTimeSeconds=1,
-            VisibilityTimeout=10
-            * 2,  # number of messages times forecasted time of executing one message (magic number)
+            VisibilityTimeout=10 * 2,  # number of messages times forecasted time of executing
+            # one message (magic number)
             MessageAttributeNames=["handler_name", "username"],
         )
         for message in messages:
