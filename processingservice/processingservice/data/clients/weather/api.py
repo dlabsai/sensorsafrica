@@ -39,6 +39,9 @@ def get_weather(
         for hour in day["hours"]:
             timestamp_string = f"{day['datetime']} {hour['datetime']}"
             timestamp = datetime.strptime(timestamp_string, "%Y-%m-%d %H:%M:%S")
+            pressure = hour.get("pressure")
+            if pressure is None:
+                pressure = 1000.0
             weather_records.append(
                 WeatherRecord(
                     latitude=data["latitude"],
@@ -46,11 +49,9 @@ def get_weather(
                     datetime_utc=timestamp,
                     temp=hour["temp"],
                     precip=hour["precip"],
-                    snow=hour["snow"],
-                    pressure=hour["pressure"],
+                    pressure=pressure,
                     humidity=hour["humidity"],
                     wind_speed=hour["windspeed"],
-                    wind_gust=hour.get("windgust"),
                 )
             )
 
