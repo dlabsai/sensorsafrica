@@ -25,8 +25,16 @@ class OpenAQRecord(BaseDataRecord):
 
 
 class InputRecord(WeatherRecord, OpenAQRecord):
+    parameter: str
+    value: float
+
     sensors_type: str
     country: str
 
-    parameter: str
-    value: float
+    chip_id: str
+    device_id: str
+    location_id: int
+    street_name: str
+    city: str
+    country: str
+    deployment_date: datetime
