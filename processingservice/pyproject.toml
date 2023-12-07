@@ -13,6 +13,7 @@ pyhumps = "^3.8.0"
 click = "^8.1.7"
 py-openaq = "^1.1.0"
 requests = "^2.31.0"
+pandas = "^2.1.3"
 
 
 [build-system]
