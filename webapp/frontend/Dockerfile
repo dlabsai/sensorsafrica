@@ -12,13 +12,10 @@ RUN rm .env
 
 RUN yarn install
 
-# Run the build command which creates the production bundle
-RUN yarn run build
 
 # Set NODE_ENV environment variable
-ENV NODE_ENV production
 
 USER node
 
 # Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+CMD [ "yarn", "start" ]

@@ -1,12 +1,12 @@
 SHELL := /bin/bash
 
-IMAGE_NAME=sensorsafrica-backend
+IMAGE_NAME=sensorsafrica-frontend
 REGION=eu-central-1
 ACCOUNT_ID=177616166430
-REPOSITORY=sensorsafrica/backend
+REPOSITORY=sensorsafrica/frontend
 
 build-image:
-	docker build --platform linux/amd64 -t "${IMAGE_NAME}" .
+	docker build -t "${IMAGE_NAME}" .
 
 aws-auth:
 	aws ecr get-login-password --region "${REGION}" | docker login --username AWS --password-stdin "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com" 
