@@ -5,6 +5,7 @@ from processingservice.data.parameters import AirQualityParameter
 from processingservice.data.records import InputRecord
 
 from .getters import get_weather_record
+from .utils import find_missing_date_hours_for_pm_readings
 
 
 def process_dataset(df: pd.DataFrame) -> pd.DataFrame:
@@ -71,7 +72,7 @@ def get_datasets(
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     df = pd.json_normalize([r.model_dump() for r in records], sep="__")
 
-    # df = process_dataset(df)
+    df = process_dataset(df)
 
     df_pm_1 = df[df["parameter"] == AirQualityParameter.PM_1.value]
     df_pm_2_5 = df[df["parameter"] == AirQualityParameter.PM_2_5.value]
@@ -140,6 +141,34 @@ def build_input_records_for_inference(
 
     # Secondly, fill in missing records with None as a missing parameter for each sensor.
     # We look only for missing PM values.
+    missing_date_hours = find_missing_date_hours_for_pm_readings(records)
 
+    for sensor, date_hours in missing_date_hours.items():
+        for date_hour in date_hours:
+            row = csv_as_df[csv_as_df['device_id'] == int(sensor[1])].iloc[0].to_dict()
+
+            latitude = float(row["latitude"])
+            longitude = float(row["longitude"])
+
+            records.append(
+                InputRecord(
+                    datetime_utc=datetime(date_hour[0].year, date_hour[0].month, date_hour[0].day, date_hour[1]),
+                    device_id=sensor[1],
+                    parameter=sensor[0],
+                    value=None,
+                    weather=get_weather_record(
+                        latitude, longitude, date_hour[0], date_hour[1]
+                    ),
+                    latitude=latitude,
+                    longitude=longitude,
+                    country=str(row["country"]),
+                    sensors_type=None,
+                    chip_id=str(row["chip_id"]),
+                    location_id=row["location_id"],
+                    street_name=str(row["street_name"]),
+                    city=str(row["city"]),
+                    deployment_date=string_to_datetime(row["deployment_date"]),
+                )
+            )
 
     return records

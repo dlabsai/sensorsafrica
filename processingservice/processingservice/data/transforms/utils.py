@@ -1,5 +1,7 @@
 from collections import defaultdict
 from datetime import timedelta, datetime, date
+
+from processingservice.data.parameters import AirQualityParameter
 from ..records import InputRecord
 
 
@@ -27,7 +29,7 @@ def find_missing_date_hours_for_pm_readings(records: list[InputRecord]) -> dict[
     key: tuple[str, str]
     for record in records:
         date_hour = (record.datetime_utc.date(), record.datetime_utc.hour)
-        if record.parameter not in ("PM 1", "PM 2_5", "PM 10"):
+        if record.parameter not in [p.value for p in AirQualityParameter]:
             continue
         key = (record.parameter, record.device_id)
         records_by_parameter_sensor[key].add(date_hour)
