@@ -26,7 +26,7 @@ def string_to_datetime(date_string: str) -> datetime:
     return datetime.strptime(date_string, date_format)
 
 
-def build_input_records(csv_file: str | None = None, csv_as_df: pd.DataFrame | None = None) -> list[InputRecord]:
+def build_input_records_for_inference(csv_file: str | None = None, csv_as_df: pd.DataFrame | None = None) -> list[InputRecord]:
     if csv_file is None and csv_as_df is None:
         raise ValueError("Either csv_file or csv_as_df must be provided")
 

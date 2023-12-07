@@ -3,7 +3,7 @@ import logging
 
 from typing import Any, Dict
 from ..awsadapters.db import update_dynamodb_item
-from ..data.transforms.dataset import build_input_records, get_datasets
+from ..data.transforms.dataset import build_input_records_for_inference, get_datasets
 
 from .enums import InferenceStatus
 from .loaders import load_user_uploaded_data_from_storage, load_predictors
@@ -23,7 +23,7 @@ def process(payload: Dict[str, Any]) -> bool:
 
     # Build input records
     try:
-        input_records = build_input_records(csv_as_df=frame_with_data)
+        input_records = build_input_records_for_inference(csv_as_df=frame_with_data)
     except Exception as e:
         logger.error(f"Failed to build input records for request ID {request_id} : {str(e)}")
         update_record_status(request_id, InferenceStatus.FAILED)
