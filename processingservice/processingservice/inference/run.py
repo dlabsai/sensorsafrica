@@ -1,6 +1,6 @@
 import pandas as pd
 
-from processingservice.inference.dummy import DummyPM1Predictor, DummyPM25Predictor, DummyPM10Predictor
+from .dummy import DummyPM1Predictor, DummyPM25Predictor, DummyPM10Predictor
 
 
 def run_inference(df_pm_1, df_pm_2_5, df_pm_10) -> pd.DataFrame:
