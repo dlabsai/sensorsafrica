@@ -1,7 +1,7 @@
 import click
 
-from processingservice.processingservice.awsadapters.sqs_consumer import consume_messages
-from processingservice.processingservice.inference.queues_handlers import get_handlers
+from processingservice.awsadapters.sqs_consumer import consume_messages
+from processingservice.inference.queues_handlers import get_handlers
 
 
 @click.command()
