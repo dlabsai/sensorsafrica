@@ -1,8 +1,10 @@
 import { Request } from 'express';
 
+export type User = {
+  id: string;
+  email: string;
+};
+
 export type RequestWithUser = Request & {
-  user: {
-    id: string;
-    email: string;
-  };
+  user: User;
 };

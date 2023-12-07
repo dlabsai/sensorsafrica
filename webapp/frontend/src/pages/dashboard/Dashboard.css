@@ -1,0 +1,23 @@
+.dashboard {
+  background: #fff;
+}
+
+.header {
+  padding-left: 20px;
+  padding-right: 20px;
+  justify-content: space-between;
+  flex-direction: row;
+  background: #efefef;
+}
+
+.header h2 {
+  margin: 0;
+}
+.header a {
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  padding: 24px;
+}
